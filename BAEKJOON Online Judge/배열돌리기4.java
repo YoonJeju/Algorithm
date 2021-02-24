@@ -8,6 +8,8 @@ public class 배열돌리기4 {
 	static int[] seq;
 	static boolean[] selected;
 	static Status[] cmd;
+	static int dr[] = {1,0,-1,0};
+	static int dc[] = {0,1,0,-1};
 	static int[][] map,copyMap;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -81,55 +83,35 @@ public class 배열돌리기4 {
 		}
 	}
 
-	private static void print() {
-		System.out.println();
-		for(int i=1; i<=N; i++) {
-			for(int j=1; j<=M; j++) {
-				System.out.print(map[i][j] + " ");
-			}
-			System.out.println();
-		}
-	}
-
 	private static void Rotate(int idx) {
-		int rSize = (cmd[idx].r + cmd[idx].s) - (cmd[idx].r - cmd[idx].s);
-		int cSize = (cmd[idx].c + cmd[idx].s) - (cmd[idx].c - cmd[idx].s);
-		
 		int r = cmd[idx].r - cmd[idx].s;
 		int c = cmd[idx].c - cmd[idx].s;
-		
-		while(true) {
-			if(rSize==1 || rSize ==0) break;
-			//좌측 
+		int s = cmd[idx].s * 2;
+		while(s>1) {
 			int tmp = map[r][c];
-			for(int i=0; i<rSize; i++) {
-				map[r][c] = map[r+1][c];
-				r++;
-			}
-			//하단
-			for(int i=0; i<cSize; i++) {
-				map[r][c] = map[r][c+1];
-				c++;
-			}
-			//우측
-			for(int i=0; i<rSize; i++) {
-				map[r][c] = map[r-1][c];
-				r--;
-			}
-			//상단
-			for(int i=0; i<cSize; i++) {
-				if(i==cSize-1) {
-					map[r][c] = tmp;
-					c--;
-					break;
+			int dir =-1;
+			int nr=0; 
+			int nc=0;
+			for(int i=0; i<4; i++) {
+				dir++;
+				nr= r + dr[dir];
+				nc= c + dc[dir];
+				for(int j=0; j<s; j++) {
+					if(i==3 && j==s-1) {
+						map[r][c] = tmp;
+						c+=dc[dir];
+						break;
+					}
+					map[r][c] = map[nr][nc];
+					r+=dr[dir];
+					c+=dc[dir];
+					nr+=dr[dir];
+					nc+=dc[dir];
 				}
-				map[r][c] = map[r][c-1];
-				c--;
 			}
-			//한바퀴 돌고 2칸씩 폭 줄이고 r,c 값은 한칸씩 안쪽으로!
-			rSize-=2;
-			cSize-=2;
-			r++;c++;
+			s-=2;
+			dir=-1;
+			r++; c++;
 		}
 	}
 
